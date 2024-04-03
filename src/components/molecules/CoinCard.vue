@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { ICoinInfo } from '@interfaces/coin';
 
-export interface TCoinCardProps extends ICoinInfo {
+export interface ICoinCardProps extends ICoinInfo {
 	cardAdditionalClass?: string;
 	onClickCard?: (id: string) => void | Promise<void>;
 }
@@ -25,7 +25,7 @@ defineOptions({
 });
 
 const { id, name, onClickCard, cardAdditionalClass } = withDefaults(
-	defineProps<TCoinCardProps>(),
+	defineProps<ICoinCardProps>(),
 	{
 		id: 'Loading...',
 		name: 'Loading...',

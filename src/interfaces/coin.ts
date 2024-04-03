@@ -19,7 +19,30 @@ export interface IUpbitCoinDetailInfo extends IUpbitCoinDefaultInfo {
 	};
 }
 
+export type TUnit = 1 | 3 | 5 | 15 | 10 | 30 | 60 | 240;
+
+export interface IUpbitCoinCandleInfo {
+	market: string;
+	candle_date_time_utc: string;
+	candle_date_time_kst: string;
+	opening_price: number;
+	high_price: number;
+	low_price: number;
+	trade_price: number;
+	timestamp: number;
+	candle_acc_trade_price: number;
+	candle_acc_trade_volume: number;
+	unit: TUnit;
+}
+
+export interface ICoinCandleInfo {
+	id: IUpbitCoinCandleInfo['market'];
+	price: IUpbitCoinCandleInfo['trade_price'];
+	date: IUpbitCoinCandleInfo['candle_date_time_kst'];
+	unit: IUpbitCoinCandleInfo['unit'];
+}
+
 export interface ICoinInfo {
-	id: string;
-	name: string;
+	id: IUpbitCoinDefaultInfo['market'];
+	name: IUpbitCoinDefaultInfo['korean_name'];
 }
