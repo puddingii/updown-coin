@@ -35,28 +35,62 @@ export const useTimer = (options: TOptions = {} as TOptions) => {
 
 	const stop = () => {
 		if (timer) {
+			onBeforeStop && onBeforeStop();
 			clearInterval(timer);
 			onStop && onStop();
 		}
 		timeInfo.counter = defaultTimeInfo.counter;
 	};
-	const start = () => {
+
+	const startBuilder = (
+		tick: number,
+		options: {
+			intervalCallback?: (tickTotal: number) => void;
+			beforeInterval?: () => void;
+			afterInterval?: () => void;
+		}
+	) => {
+		stop();
+		const { afterInterval, beforeInterval, intervalCallback } = options;
+
+		beforeInterval && beforeInterval();
 		onBeforeStart && onBeforeStart();
+
+		let tickTotal = 0;
 		timer = setInterval(() => {
 			onTick && onTick();
-			if (timeInfo.counter <= 0) {
-				onBeforeStop && onBeforeStop();
-				stop();
-				return;
-			}
-			timeInfo.counter -= 1;
-		}, timeInfo.tick * 1000);
+			tickTotal += timeInfo.tick;
+			intervalCallback && intervalCallback(tickTotal);
+		}, tick);
+
+		afterInterval && afterInterval();
 		onStart && onStart();
 	};
+
+	const start = () =>
+		startBuilder(timeInfo.tick * 1000, {
+			intervalCallback: () => {
+				if (timeInfo.counter <= 0) {
+					stop();
+					return;
+				}
+				timeInfo.counter -= 1;
+			},
+		});
+	const infinityStart = () =>
+		startBuilder(timeInfo.tick * 1000, {
+			beforeInterval: () => {
+				timeInfo.counter = 0;
+			},
+			intervalCallback: (tickTotal: number) => {
+				timeInfo.counter = tickTotal;
+			},
+		});
 
 	return {
 		prettyTime,
 		stop,
 		start,
+		infinityStart,
 	};
 };
