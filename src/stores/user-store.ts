@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
+import { useRoute } from 'vue-router';
 
 import { IUser, IUserScore, TUserHistory } from '@interfaces/user';
 
@@ -30,8 +31,14 @@ export const useUserStore = defineStore(KEY, {
 		),
 	}),
 	getters: {
-		getCurrentHistory: (state) => {
-			return (id: string) => state.coinScore[id] || state.defaultCoinScore;
+		currentHistory: (state) => {
+			const route = useRoute();
+			const id =
+				typeof route.params.id === 'string'
+					? route.params.id
+					: route.params.id[0];
+
+			return state.coinScore[id] || state.defaultCoinScore;
 		},
 	},
 	actions: {

@@ -47,9 +47,7 @@ export const useCoinStore = defineStore(KEY, {
 			state.candleList.map(
 				(candle) =>
 					({
-						date: dayjs(candle.candle_date_time_kst).format(
-							'YYYY-MM-DD HH:mm:ss'
-						),
+						date: dayjs(candle.timestamp).format('YYYY-MM-DD HH:mm:ss'),
 						id: candle.market,
 						price: candle.trade_price,
 						unit: candle.unit,

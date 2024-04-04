@@ -1,4 +1,4 @@
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 type TOptions = Partial<{
 	/** N초 */
@@ -10,11 +10,10 @@ type TOptions = Partial<{
 	onBeforeStop: () => void;
 	onStop: () => void;
 	onTick: () => void;
-}>;
+}> & { key: string };
 export const useTimer = (options: TOptions = {} as TOptions) => {
-	let timer: NodeJS.Timeout | null = null;
-
 	const {
+		key,
 		onBeforeStart,
 		onBeforeStop,
 		onStart,
@@ -23,6 +22,7 @@ export const useTimer = (options: TOptions = {} as TOptions) => {
 		...timeOptions
 	} = options;
 	const defaultTimeInfo = { counter: 180, tick: 1, ...timeOptions };
+	const timer = ref<NodeJS.Timeout | null>(null);
 	const timeInfo = reactive({ ...defaultTimeInfo });
 
 	const prettyTime = computed(() => {
@@ -34,9 +34,9 @@ export const useTimer = (options: TOptions = {} as TOptions) => {
 	});
 
 	const stop = () => {
-		if (timer) {
+		if (timer.value) {
 			onBeforeStop && onBeforeStop();
-			clearInterval(timer);
+			clearInterval(timer.value);
 			onStop && onStop();
 		}
 		timeInfo.counter = defaultTimeInfo.counter;
@@ -50,25 +50,27 @@ export const useTimer = (options: TOptions = {} as TOptions) => {
 			afterInterval?: () => void;
 		}
 	) => {
-		stop();
+		if (timer.value) {
+			clearInterval(timer.value);
+		}
 		const { afterInterval, beforeInterval, intervalCallback } = options;
 
 		beforeInterval && beforeInterval();
 		onBeforeStart && onBeforeStart();
 
 		let tickTotal = 0;
-		timer = setInterval(() => {
+		timer.value = setInterval(() => {
 			onTick && onTick();
-			tickTotal += timeInfo.tick;
+			tickTotal += tick;
 			intervalCallback && intervalCallback(tickTotal);
-		}, tick);
+		}, tick * 1000);
 
 		afterInterval && afterInterval();
 		onStart && onStart();
 	};
 
 	const start = () =>
-		startBuilder(timeInfo.tick * 1000, {
+		startBuilder(timeInfo.tick, {
 			intervalCallback: () => {
 				if (timeInfo.counter <= 0) {
 					stop();
@@ -78,7 +80,7 @@ export const useTimer = (options: TOptions = {} as TOptions) => {
 			},
 		});
 	const infinityStart = () =>
-		startBuilder(timeInfo.tick * 1000, {
+		startBuilder(timeInfo.tick, {
 			beforeInterval: () => {
 				timeInfo.counter = 0;
 			},
@@ -88,6 +90,8 @@ export const useTimer = (options: TOptions = {} as TOptions) => {
 		});
 
 	return {
+		key,
+		getCounter: () => computed(() => timeInfo.counter),
 		prettyTime,
 		stop,
 		start,

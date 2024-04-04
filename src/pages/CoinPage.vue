@@ -1,37 +1,42 @@
 <template>
-	<CoinUpDown
-		:key="JSON.stringify(priceHistoryList)"
-		:id="currentId"
-		:history="priceHistoryList"
-		:userScore="userScore"
-	/>
+	<coin-up-down></coin-up-down>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { onMounted, onBeforeUnmount, computed } from 'vue';
 import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 import CoinUpDown from 'components/templates/CoinUpDown.vue';
-import { useCoinStore } from '../stores/coin-store';
-import { useUserStore } from '../stores/user-store';
+import { useCoinStore } from 'src/stores/coin-store';
+import { useTimer } from 'src/hooks/useTimer';
 
 defineOptions({
 	name: 'CoinPage',
 });
 
 const route = useRoute();
-const currentId = ref<string>(route.params.id as string);
+const currentId = computed(() => route.params.id as string);
 
 const coinStore = useCoinStore();
-const userStore = useUserStore();
-
-const userScore = computed(() => userStore.getCurrentHistory(currentId.value));
-const priceHistoryList = computed(() => coinStore.priceHistoryList);
-
 coinStore.updateCoinCandleList(currentId.value);
+const timer = useTimer({
+	tick: 10,
+	key: 'COIN_UPDATE_TIMER',
+	onTick: () => {
+		coinStore.addCoinCandle(currentId.value);
+	},
+});
+
+onMounted(() => {
+	timer.infinityStart();
+});
 
 onBeforeRouteUpdate(async (route) => {
+	timer.infinityStart();
 	const newId = route.params.id as string;
 	await coinStore.updateCoinCandleList(newId);
-	currentId.value = newId;
+});
+
+onBeforeUnmount(() => {
+	timer.stop();
 });
 </script>

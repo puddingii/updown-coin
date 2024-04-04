@@ -38,7 +38,7 @@ export interface IUpbitCoinCandleInfo {
 export interface ICoinCandleInfo {
 	id: IUpbitCoinCandleInfo['market'];
 	price: IUpbitCoinCandleInfo['trade_price'];
-	date: IUpbitCoinCandleInfo['candle_date_time_kst'];
+	date: string;
 	unit: IUpbitCoinCandleInfo['unit'];
 }
 

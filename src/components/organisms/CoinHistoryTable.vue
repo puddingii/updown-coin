@@ -1,6 +1,8 @@
 <template>
 	<div class="q-pa-md">
 		<no-footer-table
+			:key="JSON.stringify(rowList)"
+			title="거래 현황"
 			:columns="columnList"
 			:rows="rowList"
 			:row-key="rowKey"
@@ -11,16 +13,17 @@
 <script setup lang="ts">
 import { QTableColumn } from 'quasar';
 import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import NoFooterTable from 'components/atoms/NoFooterTable.vue';
+import { useCoinStore } from 'src/stores/coin-store';
 import { ICoinCandleInfo } from '@interfaces/coin';
-
-export interface ICoinHistoryTableProps {
-	historyList: ICoinCandleInfo[];
-}
 
 defineOptions({
 	name: 'CoinHistoryTable',
 });
+
+const coinStore = useCoinStore();
+const { priceHistoryList } = storeToRefs(coinStore);
 
 const rowKey = 'date';
 const columnList = [
@@ -30,13 +33,16 @@ const columnList = [
 		label: '거래 가격',
 		align: 'left',
 		field: (row) => row.price,
-		format: (price: number) => new Intl.NumberFormat('ko-KR').format(price),
+		format: (price: number) =>
+			new Intl.NumberFormat('ko-KR', {
+				minimumSignificantDigits: 3,
+			}).format(price),
 	},
 ] as QTableColumn<ICoinCandleInfo>[];
-const { historyList } = withDefaults(defineProps<ICoinHistoryTableProps>(), {
-	historyList: () => [],
-});
 const rowList = computed(() =>
-	historyList.map((history) => ({ price: history.price, date: history.date }))
+	priceHistoryList.value.map((history) => ({
+		price: history.price,
+		date: history.date,
+	}))
 );
 </script>
