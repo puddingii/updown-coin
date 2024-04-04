@@ -97,7 +97,6 @@ const updownTimer = useTimer({
 		const recent = priceHistoryList.value.at(0);
 		if (userSelectInfo.decide && timeInfo.counter === 0 && recent) {
 			const isUp = comparator(recent.price, userSelectInfo.price);
-			console.log(recent.price, userSelectInfo.price);
 			userStore.updateCoinScore(id.value, isUp ? 1 : -1, {
 				beforePrice: userSelectInfo.price,
 				currentPrice: priceHistoryList.value[0].price,
