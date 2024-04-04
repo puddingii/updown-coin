@@ -1,15 +1,16 @@
 import { computed, reactive, ref } from 'vue';
 
+type TFunctionParams = { counter: number; tick: number };
 type TOptions = Partial<{
 	/** N초 */
 	counter: number;
 	/** 1000 * N초 */
 	tick: number;
-	onBeforeStart: () => void;
-	onStart: () => void;
-	onBeforeStop: () => void;
-	onStop: () => void;
-	onTick: () => void;
+	onBeforeStart: (params: TFunctionParams) => void;
+	onStart: (params: TFunctionParams) => void;
+	onBeforeStop: (params: TFunctionParams) => void;
+	onStop: (params: TFunctionParams) => void;
+	onTick: (params: TFunctionParams) => void;
 }> & { key: string };
 export const useTimer = (options: TOptions = {} as TOptions) => {
 	const {
@@ -35,9 +36,9 @@ export const useTimer = (options: TOptions = {} as TOptions) => {
 
 	const stop = () => {
 		if (timer.value) {
-			onBeforeStop && onBeforeStop();
+			onBeforeStop && onBeforeStop(timeInfo);
 			clearInterval(timer.value);
-			onStop && onStop();
+			onStop && onStop(timeInfo);
 		}
 		timeInfo.counter = defaultTimeInfo.counter;
 	};
@@ -56,17 +57,17 @@ export const useTimer = (options: TOptions = {} as TOptions) => {
 		const { afterInterval, beforeInterval, intervalCallback } = options;
 
 		beforeInterval && beforeInterval();
-		onBeforeStart && onBeforeStart();
+		onBeforeStart && onBeforeStart(timeInfo);
 
 		let tickTotal = 0;
 		timer.value = setInterval(() => {
-			onTick && onTick();
+			onTick && onTick(timeInfo);
 			tickTotal += tick;
 			intervalCallback && intervalCallback(tickTotal);
 		}, tick * 1000);
 
 		afterInterval && afterInterval();
-		onStart && onStart();
+		onStart && onStart(timeInfo);
 	};
 
 	const start = () =>

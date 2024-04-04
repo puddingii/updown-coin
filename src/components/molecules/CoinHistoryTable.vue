@@ -1,7 +1,6 @@
 <template>
 	<div class="q-pa-md">
 		<no-footer-table
-			:key="JSON.stringify(rowList)"
 			title="거래 현황"
 			:columns="columnList"
 			:rows="rowList"
@@ -16,6 +15,7 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import NoFooterTable from 'components/atoms/NoFooterTable.vue';
 import { useCoinStore } from 'src/stores/coin-store';
+import { formatKRNumber } from 'src/util/formatNumber';
 import { ICoinCandleInfo } from '@interfaces/coin';
 
 defineOptions({
@@ -33,10 +33,7 @@ const columnList = [
 		label: '거래 가격',
 		align: 'left',
 		field: (row) => row.price,
-		format: (price: number) =>
-			new Intl.NumberFormat('ko-KR', {
-				minimumSignificantDigits: 3,
-			}).format(price),
+		format: (price: number) => formatKRNumber(price),
 	},
 ] as QTableColumn<ICoinCandleInfo>[];
 const rowList = computed(() =>

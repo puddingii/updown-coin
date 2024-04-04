@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import CoinHistoryTable from 'components/organisms/CoinHistoryTable.vue';
+import CoinHistoryTable from 'components/molecules/CoinHistoryTable.vue';
 import CoinUpDownCard from 'components/organisms/CoinUpDownCard.vue';
 
 export interface ICoinUpDownCard {

@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
 import { useRoute } from 'vue-router';
 
-import { IUser, IUserScore, TUserHistory } from '@interfaces/user';
+import { IUser, IUserScore, TUserHistory, TComboInfo } from '@interfaces/user';
 
 const KEY = 'user';
 
@@ -17,13 +17,13 @@ export const useUserStore = defineStore(KEY, {
 			}
 		),
 		defaultCoinScore: {
-			combo: 0,
 			fail: 0,
 			success: 0,
+			comboList: [],
 		} as IUserScore,
 		coinScore: useStorage(
 			`${KEY}-coin-score`,
-			{ 'KRW-ETH': { combo: 0, fail: 2, success: 5 } } as TUserHistory,
+			{} as TUserHistory,
 			localStorage,
 			{
 				mergeDefaults: true,
@@ -42,14 +42,14 @@ export const useUserStore = defineStore(KEY, {
 		},
 	},
 	actions: {
-		updateCoinScore(id: string, cnt: number) {
+		updateCoinScore(id: string, cnt: number, comboInfo?: TComboInfo) {
 			const score = this.coinScore[id] || this.defaultCoinScore;
-			if (cnt > 0) {
+			if (cnt > 0 && comboInfo) {
 				score.success += 1;
-				score.combo += 1;
+				score.comboList.unshift(comboInfo);
 			} else {
 				score.fail += 1;
-				score.combo = 0;
+				score.comboList = [];
 			}
 
 			this.coinScore[id] = { ...score };

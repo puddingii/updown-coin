@@ -2,11 +2,13 @@
 	<q-table
 		flat
 		bordered
+		hide-bottom
+		class="no-footer-table"
+		:style="style"
 		:title="title"
 		:rows="rows"
 		:columns="columns"
 		:row-key="rowKey"
-		hide-bottom
 		:pagination="{ rowsPerPage: 0 }"
 	/>
 </template>
@@ -15,6 +17,7 @@
 import { QTableProps } from 'quasar';
 
 export interface INoFooterTableProps {
+	style?: Record<string, string | boolean>;
 	title: string;
 	columns: Exclude<QTableProps['columns'], undefined>;
 	rows: QTableProps['rows'];
@@ -25,9 +28,5 @@ defineOptions({
 	name: 'NoFooterTable',
 });
 
-withDefaults(defineProps<INoFooterTableProps>(), {
-	columns: () => [] as INoFooterTableProps['columns'],
-	rowKey: '',
-	rows: () => [] as INoFooterTableProps['rows'],
-});
+defineProps<INoFooterTableProps>();
 </script>

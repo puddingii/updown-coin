@@ -1,7 +1,7 @@
 <template>
 	<q-card-section :class="additionalClass">
 		<div class="text-h6">{{ id }}</div>
-		<div class>Combo: {{ currentHistory.combo }}</div>
+		<div class>Combo: {{ combo }}</div>
 		<div class>맞춤: {{ currentHistory.success }}</div>
 		<div class>틀림: {{ currentHistory.fail }}</div>
 	</q-card-section>
@@ -28,4 +28,5 @@ const id = computed(() => route.params.id as string);
 
 const userStore = useUserStore();
 const { currentHistory } = storeToRefs(userStore);
+const combo = computed(() => currentHistory.value.comboList?.length ?? 0);
 </script>
