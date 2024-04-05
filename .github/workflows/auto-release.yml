@@ -24,7 +24,7 @@ jobs:
       - name: Setup NodeJS Environment ${{ matrix.node-versions }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix.node-versions }}
       - run: yarn install && yarn global add @quasar/cli
       - run: yarn build:electron
       - run: zip -r  ./electron-${{ github.run_number }}.zip ./dist/electron/*
@@ -33,7 +33,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
           tag_name: ${{ github.run_number }}
           name: Release ${{ github.run_number }}
