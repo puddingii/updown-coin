@@ -24,13 +24,10 @@ defineOptions({
 	name: 'CoinCard',
 });
 
-const { id, name, onClickCard, cardAdditionalClass } = withDefaults(
-	defineProps<ICoinCardProps>(),
-	{
-		id: 'Loading...',
-		name: 'Loading...',
-	}
-);
+withDefaults(defineProps<ICoinCardProps>(), {
+	id: 'Loading...',
+	name: 'Loading...',
+});
 </script>
 
 <style lang="sass" scoped>

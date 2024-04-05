@@ -23,7 +23,7 @@ defineOptions({
 });
 const router = useRouter();
 
-const { coinList, countPerRow } = withDefaults(
+const props = withDefaults(
 	defineProps<{ coinList: ICoinInfo[]; countPerRow: number }>(),
 	{
 		coinList: () => [] as ICoinInfo[],
@@ -32,10 +32,10 @@ const { coinList, countPerRow } = withDefaults(
 );
 
 const multipleRowList = computed(() => {
-	return coinList.reduce(
+	return props.coinList.reduce(
 		(acc, cur) => {
 			const rowList = acc.at(-1) as ICoinInfo[];
-			if (rowList.length < countPerRow) {
+			if (rowList.length < props.countPerRow) {
 				rowList.push(cur);
 			} else {
 				acc.push([cur]);

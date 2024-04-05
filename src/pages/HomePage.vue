@@ -1,6 +1,6 @@
 <template>
 	<img class="main-div" :src="MainBackground" />
-	<span class="main-title">코인 Up & Down!!!!!!!</span>
+	<div class="main-title">코인 Up & Down!!!!!!!</div>
 	<q-btn class="go-btn" @click="onClickGo">Za 드가자</q-btn>
 </template>
 
@@ -22,10 +22,11 @@ const onClickGo = () => {
 .main-title
   position: absolute
   top: 35%
-  left: 28%
-  margin-left: -50px
-  margin-top: -50px
+  left: 50%
+  transform: translate(-50%, -50%)
   padding: 10px 30px
+  width: 690px
+  text-align: center
   z-index: 10
   font-size: 70px
   background-image: linear-gradient(90deg, red, orange, yellow, green, blue, navy, purple)
@@ -34,14 +35,14 @@ const onClickGo = () => {
 .main-div
   width: 100%
   height: 100%
+  opacity: 0.5
 .go-btn
   width: 100px
   height: 43px
   position: absolute
   top: 50%
   left: 50%
-  margin-left: -53px
-  margin-top: -50px
+  transform: translate(-50%, -50%)
   z-index: 10
   background-image: linear-gradient(90deg, red, orange, yellow, green, blue, navy, purple)
   font-size: 15px
