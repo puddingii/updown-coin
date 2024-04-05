@@ -1,0 +1,42 @@
+name: Quasar Electron Release
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-capacitor:
+    runs-on: ${{ matrix.os-versions }}
+
+    defaults:
+      run:
+        shell: bash
+
+    strategy:
+      matrix:
+        os-versions: [windows-latest, macos-latest, ubuntu-latest]
+        node-versions: [20.x]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup NodeJS Environment ${{ matrix.node-versions }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install && yarn global add @quasar/cli
+      - run: yarn build:electron
+      - run: zip -r  ./electron-${{ github.run_number }}.zip ./dist/electron/*
+
+      - name: Create/Upload Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.run_number }}
+          name: Release ${{ github.run_number }}
+          body: Automated Electron Build & Release
+          draft: false
+          prerelease: false
