@@ -3,8 +3,8 @@ name: Quasar Electron Release
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build-capacitor:
@@ -27,16 +27,21 @@ jobs:
           node-version: ${{ matrix.node-versions }}
       - run: yarn install && yarn global add @quasar/cli
       - run: yarn build:electron
-      - run: zip -r  ./electron-${{ github.run_number }}.zip ./dist/electron/*
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.6
+        with:
+          type: 'zip'
+          filename: release-${{ matrix.os-versions }}.zip
+          exclusions: './dist/electron/*'
 
       - name: Create/Upload Release
-        id: create_release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
-          tag_name: ${{ github.run_number }}
-          name: Release ${{ github.run_number }}
+          files: release-${{ matrix.os-versions }}.zip
+          name: Release ${{ github.ref_name }}
           body: Automated Electron Build & Release
           draft: false
           prerelease: false
