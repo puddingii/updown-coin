@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
 import { useRoute } from 'vue-router';
+import { useAlert } from 'src/hooks/useAlert';
 
 import { IUser, IUserScore, TUserHistory, TComboInfo } from '@interfaces/user';
 
@@ -43,6 +44,7 @@ export const useUserStore = defineStore(KEY, {
 	},
 	actions: {
 		updateCoinScore(id: string, cnt: number, comboInfo?: TComboInfo) {
+			const alerter = useAlert();
 			const score = this.coinScore[id] || this.defaultCoinScore;
 			if (cnt > 0 && comboInfo) {
 				score.success += 1;
@@ -50,6 +52,7 @@ export const useUserStore = defineStore(KEY, {
 			} else {
 				score.fail += 1;
 				score.comboList = [];
+				alerter.fireFail();
 			}
 
 			this.coinScore[id] = { ...score };
