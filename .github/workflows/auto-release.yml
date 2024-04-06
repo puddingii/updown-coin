@@ -2,7 +2,6 @@ name: Quasar Electron Release
 
 on:
   push:
-    branches: [main]
     tags:
       - 'v*.*.*'
 
@@ -33,7 +32,7 @@ jobs:
         with:
           type: 'zip'
           filename: release-${{ matrix.os-versions }}.zip
-          exclusions: './dist/electron/*'
+          path: './dist/electron/Packaged'
 
       - name: Create/Upload Release
         uses: softprops/action-gh-release@v2
