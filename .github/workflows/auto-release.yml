@@ -32,7 +32,8 @@ jobs:
         with:
           type: 'zip'
           filename: release-${{ matrix.os-versions }}.zip
-          path: './dist/electron/Packaged'
+          directory: './dist/electron'
+          path: 'Packaged'
 
       - name: Create/Upload Release
         uses: softprops/action-gh-release@v2
