@@ -3,6 +3,7 @@ import { useStorage } from '@vueuse/core';
 import dayjs from 'dayjs';
 
 import { api } from 'src/boot/axios';
+import { formatURLParams } from 'src/util/formatURLParams';
 import {
 	ICoinCandleInfo,
 	IUpbitCoinCandleInfo,
@@ -57,8 +58,11 @@ export const useCoinStore = defineStore(KEY, {
 	actions: {
 		async updateCoinList() {
 			try {
+				const queryString = formatURLParams({
+					isDetails: true,
+				});
 				const response = await api.get<IUpbitCoinDetailInfo[]>(
-					'/v1/market/all?isDetails=true'
+					`/v1/market/all?${queryString}`
 				);
 
 				this.infoList = response.data;
@@ -71,10 +75,14 @@ export const useCoinStore = defineStore(KEY, {
 			options?: { unit?: TUnit; count?: number }
 		) {
 			try {
-				const count = options?.count ?? 10;
 				const unit = options?.unit ?? 1;
+				const queryInfo = {
+					count: options?.count ?? 10,
+					market: id,
+					to: new Date().toISOString(),
+				};
 				const response = await api.get<IUpbitCoinCandleInfo[]>(
-					`/v1/candles/minutes/${unit}?market=${id}&count=${count}`
+					`/v1/candles/minutes/${unit}?${formatURLParams(queryInfo)}`
 				);
 
 				this.candleList = response.data;
@@ -84,8 +92,13 @@ export const useCoinStore = defineStore(KEY, {
 		},
 		async addCoinCandle(id: string, unit?: TUnit) {
 			try {
+				const queryInfo = {
+					count: 1,
+					market: id,
+					to: new Date().toISOString(),
+				};
 				const response = await api.get<IUpbitCoinCandleInfo[]>(
-					`/v1/candles/minutes/${unit ?? 1}?market=${id}&count=1`
+					`/v1/candles/minutes/${unit ?? 1}?${formatURLParams(queryInfo)}`
 				);
 
 				const updatedList = [...this.candleList];
