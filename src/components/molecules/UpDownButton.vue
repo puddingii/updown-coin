@@ -43,10 +43,10 @@ defineOptions({
 	name: 'UpDownButton',
 });
 
-const { userSelectInfo } = defineProps<IUpDownButtonProps>();
+const props = defineProps<IUpDownButtonProps>();
 
 const isActive = (select: IUpDownButtonProps['userSelectInfo']['select']) => {
-	return userSelectInfo.select === select;
+	return props.userSelectInfo.select === select;
 };
 </script>
 <style lang="sass" scoped>

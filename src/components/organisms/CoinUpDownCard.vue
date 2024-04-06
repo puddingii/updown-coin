@@ -6,7 +6,14 @@
 			:class="cardAdditionalClass"
 		>
 			<div class="score">
-				<user-score-section></user-score-section>
+				<user-score-section
+					:id="id"
+					:current-history="{
+						combo: comboCount,
+						fail: userScore.fail,
+						success: userScore.success,
+					}"
+				></user-score-section>
 			</div>
 			<div class="button-list">
 				<up-down-button
@@ -33,7 +40,9 @@
 					></percent-circular-progress>
 				</div>
 				<div class="col-7 flex flex-center user-combo-table">
-					<user-combo-table></user-combo-table>
+					<user-combo-table
+						:combo-list="userScore.comboList"
+					></user-combo-table>
 				</div>
 			</div>
 		</q-card>
@@ -42,8 +51,6 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, reactive } from 'vue';
-import { useRoute } from 'vue-router';
-import { storeToRefs } from 'pinia';
 import UserScoreSection from 'components/molecules/UserScoreSection.vue';
 import UserComboTable from 'components/molecules/UserComboTable.vue';
 import ChipList, { IChipList } from 'components/molecules/ChipList.vue';
@@ -52,37 +59,37 @@ import UpDownButton, {
 } from 'components/molecules/UpDownButton.vue';
 import PercentCircularProgress from 'components/atoms/PercentCircularProgress.vue';
 import { useTimer } from 'src/hooks/useTimer';
-import { useUserStore } from 'src/stores/user-store';
-import { useCoinStore } from 'src/stores/coin-store';
 import { formatKRNumber } from 'src/util/formatNumber';
+import { useUserStore } from 'src/stores/user-store';
+import { ICoinCandleInfo } from '@interfaces/coin';
+import { IUserScore } from '@interfaces/user';
 
 export interface ICoinUpDownCard {
 	cardAdditionalClass?: string;
+	id: string;
+	latestCoinInfo?: ICoinCandleInfo;
+	userScore: IUserScore;
 }
 
 defineOptions({
 	name: 'CoinUpDownCard',
 });
 
-defineProps<ICoinUpDownCard>();
-
-const route = useRoute();
-const id = computed(() => route.params.id as string);
-
-const userStore = useUserStore();
-const coinStore = useCoinStore();
-const { priceHistoryList } = storeToRefs(coinStore);
+const props = defineProps<ICoinUpDownCard>();
+const comboCount = computed(() => props.userScore.comboList.length);
 
 const userSelectInfo = reactive({
 	select: 'none',
 	decide: false,
 	price: 0,
 } as IUpDownButtonProps['userSelectInfo'] & { price: number });
+const isUserSelectUp = computed(() => userSelectInfo.select === 'up');
+const isUserSelectDown = computed(() => userSelectInfo.select === 'down');
 const comparator = (a: number, b: number) => {
-	if (userSelectInfo.select === 'up') {
+	if (isUserSelectUp.value) {
 		return a > b;
 	}
-	if (userSelectInfo.select === 'down') {
+	if (isUserSelectDown.value) {
 		return a < b;
 	}
 
@@ -94,14 +101,21 @@ const updownTimer = useTimer({
 	counter,
 	key: 'UPDOWN_TIMER',
 	onStop: (timeInfo) => {
-		const recent = priceHistoryList.value.at(0);
-		if (userSelectInfo.decide && timeInfo.counter === 0 && recent) {
-			const isUp = comparator(recent.price, userSelectInfo.price);
-			userStore.updateCoinScore(id.value, isUp ? 1 : -1, {
-				beforePrice: userSelectInfo.price,
-				currentPrice: priceHistoryList.value[0].price,
-				isUp: userSelectInfo.select === 'up',
-			});
+		if (
+			userSelectInfo.decide &&
+			timeInfo.counter === 0 &&
+			props.latestCoinInfo
+		) {
+			const userStore = useUserStore();
+			userStore.updateCoinScore(
+				props.id,
+				comparator(props.latestCoinInfo.price, userSelectInfo.price) ? 1 : -1,
+				{
+					beforePrice: userSelectInfo.price,
+					currentPrice: props.latestCoinInfo.price,
+					isUp: isUserSelectUp.value,
+				}
+			);
 		}
 		userSelectInfo.decide = false;
 		userSelectInfo.select = 'none';
@@ -118,10 +132,10 @@ const chipInfoList = computed(() => {
 			text: `${formatKRNumber(userSelectInfo.price)} 원`,
 		});
 	}
-	if (userSelectInfo.select === 'up') {
+	if (isUserSelectUp.value) {
 		list.push({ color: 'secondary', textColor: 'white', text: 'UP!!!!' });
 	}
-	if (userSelectInfo.select === 'down') {
+	if (isUserSelectDown.value) {
 		list.push({ color: 'negative', textColor: 'white', text: 'DOWN!!!!' });
 	}
 
@@ -135,10 +149,9 @@ function onClickDown() {
 	userSelectInfo.select = 'down';
 }
 function onClickDecide() {
-	const recentHistory = priceHistoryList.value.at(0);
-	if (userSelectInfo.select !== 'none' && recentHistory) {
+	if (userSelectInfo.select !== 'none' && props.latestCoinInfo) {
 		userSelectInfo.decide = true;
-		userSelectInfo.price = recentHistory.price;
+		userSelectInfo.price = props.latestCoinInfo.price;
 		updownTimer.start();
 	}
 }

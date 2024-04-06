@@ -11,21 +11,22 @@
 
 <script setup lang="ts">
 import { QTableColumn } from 'quasar';
-import { computed } from 'vue';
-import { storeToRefs } from 'pinia';
 import NoFooterTable from 'components/atoms/NoFooterTable.vue';
-import { useCoinStore } from 'src/stores/coin-store';
 import { formatKRNumber } from 'src/util/formatNumber';
 import { ICoinCandleInfo } from '@interfaces/coin';
+
+type TRowInfo = { price: number; date: string; id: number };
+export interface ICoinHistoryTable {
+	rowList: TRowInfo[];
+	rowKey: keyof TRowInfo;
+}
 
 defineOptions({
 	name: 'CoinHistoryTable',
 });
 
-const coinStore = useCoinStore();
-const { priceHistoryList } = storeToRefs(coinStore);
+defineProps<ICoinHistoryTable>();
 
-const rowKey = 'date';
 const columnList = [
 	{ name: 'date', align: 'center', label: '날짜', field: (row) => row.date },
 	{
@@ -36,10 +37,4 @@ const columnList = [
 		format: (price: number) => formatKRNumber(price),
 	},
 ] as QTableColumn<ICoinCandleInfo>[];
-const rowList = computed(() =>
-	priceHistoryList.value.map((history) => ({
-		price: history.price,
-		date: history.date,
-	}))
-);
 </script>

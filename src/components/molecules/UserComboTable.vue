@@ -4,7 +4,7 @@
 			title="콤보 히스토리"
 			:style="{ height: '350px' }"
 			:columns="columnList"
-			:rows="myComboList"
+			:rows="comboList"
 			:row-key="rowKey"
 		></no-footer-table>
 	</div>
@@ -12,18 +12,19 @@
 
 <script setup lang="ts">
 import { QTableColumn } from 'quasar';
-import { computed } from 'vue';
 import NoFooterTable from 'components/atoms/NoFooterTable.vue';
 import { formatKRNumber } from 'src/util/formatNumber';
 import { TComboInfo } from '@interfaces/user';
-import { useUserStore } from 'src/stores/user-store';
+
+export interface IUserComboTable {
+	comboList: TComboInfo[];
+}
 
 defineOptions({
 	name: 'UserComboTable',
 });
 
-const userStore = useUserStore();
-const myComboList = computed(() => userStore.currentHistory.comboList);
+defineProps<IUserComboTable>();
 
 const rowKey = 'date';
 const columnList = [
