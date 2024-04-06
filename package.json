@@ -10,6 +10,7 @@
 		"format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
 		"test": "echo \"No test specified\" && exit 0",
 		"dev": "quasar dev",
+		"dev:electron": "quasar dev -m electron",
 		"build": "quasar build",
 		"build:electron": "quasar build -m electron -P always",
 		"build:electron-debug": "quasar build -m electron -d"
@@ -23,6 +24,7 @@
 		"lodash": "^4.17.21",
 		"pinia": "^2.0.11",
 		"quasar": "^2.8.0",
+		"sweetalert2": "^11.10.7",
 		"vue": "^3.4.18",
 		"vue-router": "^4.0.12"
 	},
