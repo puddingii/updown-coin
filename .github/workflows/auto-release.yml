@@ -32,15 +32,14 @@ jobs:
         with:
           type: 'zip'
           filename: release-${{ matrix.os-versions }}.zip
-          directory: './dist/electron'
-          path: 'Packaged'
+          directory: './dist/electron/Packaged'
 
       - name: Create/Upload Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
         with:
-          files: release-${{ matrix.os-versions }}.zip
+          files: ./dist/electron/Packaged/release-${{ matrix.os-versions }}.zip
           name: Release ${{ github.ref_name }}
           body: Automated Electron Build & Release
           draft: false
