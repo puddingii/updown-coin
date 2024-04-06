@@ -1,5 +1,13 @@
 <template>
-	<img class="main-div" :src="MainBackground" />
+	<div class="main-div">
+		<q-img
+			class="main-img"
+			:src="MainBackground"
+			width="100%"
+			height="100%"
+			fit="fill"
+		/>
+	</div>
 	<div class="main-title">코인 Up & Down!!!!!!!</div>
 	<q-btn class="go-btn" @click="onClickGo">Za 드가자</q-btn>
 </template>
@@ -35,9 +43,10 @@ const onClickGo = () => {
 .main-div
   width: 100%
   height: 100%
+.main-img
   opacity: 0.5
 .go-btn
-  width: 100px
+  width: 110px
   height: 43px
   position: absolute
   top: 50%
