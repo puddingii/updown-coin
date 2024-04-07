@@ -1,6 +1,6 @@
 # Updown Coin
 
-![Changelog CI Status](https://github.com/puddingii/updown-coin/workflows/Changelog%20CI/badge.svg)
+![Changelog CI Status](https://github.com/puddingii/updown-coin/workflows/Quasar%20Electron%20Release/badge.svg)
 
 Updown Coin Game
 
