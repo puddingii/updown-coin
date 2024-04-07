@@ -6,8 +6,23 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build-capacitor:
+  auto-changelog:
+    runs-on: ubuntu-latest
+    outputs:
+      changelog_output: ${{ steps.changelog-ci.outputs.changelog }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Changelog CI
+        uses: saadmk11/changelog-ci@v1.1.2
+        id: changelog-ci
+        with:
+          config_file: changelog-ci-config.json
+          release_version: ${{ github.ref_name }}
+
+  release:
     runs-on: ${{ matrix.os-versions }}
+    needs: [auto-changelog]
 
     defaults:
       run:
@@ -34,14 +49,6 @@ jobs:
           filename: release-${{ matrix.os-versions }}.zip
           directory: './dist/electron/Packaged'
 
-      - name: Run Changelog CI
-        uses: saadmk11/changelog-ci@v1.1.2
-        id: changelog-ci
-        with:
-          config_file: changelog-ci-config.json
-          release_version: ${{ github.ref_name }}
-          github_token: ${{ secrets.GHCR_TOKEN }}
-
       - name: Create/Upload Release
         uses: softprops/action-gh-release@v2
         env:
@@ -51,6 +58,6 @@ jobs:
           name: Release ${{ github.ref_name }}
           body: |
             Automated Electron Release & Change-log
-            ${{ steps.changelog-ci.outputs.changelog }}
+            ${{ needs.auto-changelog.outputs.changelog_output }}
           draft: false
           prerelease: false
