@@ -34,6 +34,14 @@ jobs:
           filename: release-${{ matrix.os-versions }}.zip
           directory: './dist/electron/Packaged'
 
+      - name: Run Changelog CI
+        uses: saadmk11/changelog-ci@v1.1.2
+        id: changelog-ci
+        with:
+          config_file: changelog-ci-config.json
+          release_version: ${{ github.ref_name }}
+          github_token: ${{ secrets.GHCR_TOKEN }}
+
       - name: Create/Upload Release
         uses: softprops/action-gh-release@v2
         env:
@@ -41,6 +49,8 @@ jobs:
         with:
           files: ./dist/electron/Packaged/release-${{ matrix.os-versions }}.zip
           name: Release ${{ github.ref_name }}
-          body: Automated Electron Build & Release
+          body: |
+            Automated Electron Release & Change-log
+            ${{ steps.changelog-ci.outputs.changelog }}
           draft: false
           prerelease: false

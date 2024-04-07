@@ -1,5 +1,7 @@
 # Updown Coin
 
+![Changelog CI Status](https://github.com/puddingii/updown-coin/workflows/Changelog%20CI/badge.svg)
+
 Updown Coin Game
 
 ## Install the dependencies
