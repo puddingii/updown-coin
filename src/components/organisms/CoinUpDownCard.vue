@@ -96,6 +96,7 @@ const comparator = (a: number, b: number) => {
 	return false;
 };
 
+const userStore = useUserStore();
 const counter = 20;
 const updownTimer = useTimer({
 	counter,
@@ -106,7 +107,6 @@ const updownTimer = useTimer({
 			timeInfo.counter === 0 &&
 			props.latestCoinInfo
 		) {
-			const userStore = useUserStore();
 			userStore.updateCoinScore(
 				props.id,
 				comparator(props.latestCoinInfo.price, userSelectInfo.price) ? 1 : -1,
