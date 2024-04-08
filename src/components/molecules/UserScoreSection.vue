@@ -1,7 +1,7 @@
 <template>
 	<q-card-section :class="additionalClass">
 		<div class="text-h6">{{ id }}</div>
-		<div class>Combo: {{ currentHistory.combo }}</div>
+		<div class>최대 콤보: {{ currentHistory.maxCombo }}</div>
 		<div class>맞춤: {{ currentHistory.success }}</div>
 		<div class>틀림: {{ currentHistory.fail }}</div>
 	</q-card-section>
@@ -14,7 +14,7 @@ export interface IUserScoreSection {
 	currentHistory: {
 		success: number;
 		fail: number;
-		combo: number;
+		maxCombo: number;
 	};
 }
 

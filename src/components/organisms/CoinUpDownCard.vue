@@ -9,9 +9,9 @@
 				<user-score-section
 					:id="id"
 					:current-history="{
-						combo: comboCount,
 						fail: userScore.fail,
 						success: userScore.success,
+						maxCombo: userScore.maxCombo,
 					}"
 				></user-score-section>
 			</div>
@@ -76,7 +76,6 @@ defineOptions({
 });
 
 const props = defineProps<ICoinUpDownCard>();
-const comboCount = computed(() => props.userScore.comboList.length);
 
 const userSelectInfo = reactive({
 	select: 'none',

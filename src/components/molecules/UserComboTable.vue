@@ -1,7 +1,7 @@
 <template>
 	<div class="q-pa-md">
 		<no-footer-table
-			title="콤보 히스토리"
+			:title="`콤보 히스토리 x${comboCount}`"
 			:style="{ height: '350px' }"
 			:columns="columnList"
 			:rows="comboList"
@@ -15,6 +15,7 @@ import { QTableColumn } from 'quasar';
 import NoFooterTable from 'components/atoms/NoFooterTable.vue';
 import { formatKRNumber } from 'src/util/formatNumber';
 import { TComboInfo } from '@interfaces/user';
+import { computed } from 'vue';
 
 export interface IUserComboTable {
 	comboList: TComboInfo[];
@@ -24,8 +25,9 @@ defineOptions({
 	name: 'UserComboTable',
 });
 
-defineProps<IUserComboTable>();
+const props = defineProps<IUserComboTable>();
 
+const comboCount = computed(() => props.comboList.length);
 const rowKey = 'date';
 const columnList = [
 	{

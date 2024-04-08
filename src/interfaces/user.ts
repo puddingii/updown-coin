@@ -14,6 +14,7 @@ export interface IUserScore {
 	success: number;
 	fail: number;
 	comboList: TComboInfo[];
+	maxCombo: number;
 }
 
 export type TUserHistory = Record<ICoinInfo['id'], IUserScore>;

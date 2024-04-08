@@ -20,6 +20,7 @@ export const useUserStore = defineStore(KEY, {
 			fail: 0,
 			success: 0,
 			comboList: [],
+			maxCombo: 0,
 		} as IUserScore,
 		coinScore: useStorage(
 			`${KEY}-coin-score`,
@@ -55,6 +56,9 @@ export const useUserStore = defineStore(KEY, {
 				alerter.fireFail();
 			}
 
+			if (score.maxCombo < score.comboList.length) {
+				score.maxCombo = score.comboList.length;
+			}
 			this.coinScore[id] = { ...score };
 		},
 	},
