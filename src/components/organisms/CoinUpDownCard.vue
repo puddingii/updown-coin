@@ -156,6 +156,10 @@ function onClickDecide() {
 }
 
 onBeforeUnmount(() => {
+	/** 시간이 다 지나지 않고 페이지를 이탈했을 경우 */
+	if (userSelectInfo.decide && props.latestCoinInfo) {
+		userStore.updateCoinScore(props.id, -1);
+	}
 	updownTimer.stop();
 });
 </script>
