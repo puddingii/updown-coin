@@ -22,6 +22,11 @@
 									<q-item-label>코인 고르기</q-item-label>
 								</q-item-section>
 							</q-item>
+							<q-item clickable v-close-popup @click="onClickHardReset">
+								<q-item-section>
+									<q-item-label>데이터 하드리셋</q-item-label>
+								</q-item-section>
+							</q-item>
 						</q-list>
 					</q-btn-dropdown>
 				</div>
@@ -56,6 +61,11 @@ const onToggleDark = () => {
 
 const onClickBack = () => {
 	router.push('/coin');
+};
+
+const onClickHardReset = () => {
+	localStorage.clear();
+	router.go(0);
 };
 
 onBeforeMount(() => {
