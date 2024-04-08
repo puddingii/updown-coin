@@ -10,7 +10,7 @@ export const useUserStore = defineStore(KEY, {
 	state: () => ({
 		userInfo: useStorage(
 			`${KEY}-user-info`,
-			{ nickname: '' } as IUser,
+			{ nickname: '', isDark: false } as IUser,
 			localStorage,
 			{
 				mergeDefaults: true,
@@ -37,8 +37,12 @@ export const useUserStore = defineStore(KEY, {
 
 			return state.coinScore[id] || state.defaultCoinScore;
 		},
+		isDarkMode: (state) => !!state.userInfo.isDark,
 	},
 	actions: {
+		toggleDark() {
+			this.userInfo.isDark = !this.userInfo.isDark;
+		},
 		updateCoinScore(id: string, cnt: number, comboInfo?: TComboInfo) {
 			const alerter = useAlert();
 			const score = this.coinScore[id] || this.defaultCoinScore;

@@ -2,6 +2,7 @@ import { ICoinInfo } from './coin';
 
 export interface IUser {
 	nickname: string;
+	isDark?: boolean;
 }
 
 export type TComboInfo = {
