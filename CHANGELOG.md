@@ -1,3 +1,11 @@
+# Version: v1.0.7
+
+* [ac5ea66](https://github.com/puddingii/updown-coin/commit/ac5ea66827f56b6af41740f366097c21a0d96791): chore: Alert CSS 제대로 적용안되던 부분 수정, 타이머가 작동할때 페이지 이동시 실패처리
+* [2091d26](https://github.com/puddingii/updown-coin/commit/2091d26053de9d882d11d087c8f667ed973dcc09): feat: 데이터 하드리셋 기능 추가
+* [fe51d7e](https://github.com/puddingii/updown-coin/commit/fe51d7ea4548e43aa84c19838d0d8a6d3e9cd488): feat(combo): 최대콤보 카운트 저장기능 추가
+* [d5a04c4](https://github.com/puddingii/updown-coin/commit/d5a04c40230d732b6e5c990be71aa35c47d4a8e3): feat(darkmode): 다크모드 추가
+
+
 # Version: v1.0.6
 
 * [8f17112](https://github.com/puddingii/updown-coin/commit/8f171124ade4227a78af0eef4322525553a25fb7): ci(changelog): README 뱃지 안뜨던 부분 수정, Changelog ci 수정
