@@ -12,15 +12,15 @@ defineOptions({
 
 const userStore = useUserStore();
 
-const loadAlertCSS = (isDark: boolean) => {
-	isDark
+const loadAlertCSS = async (isDark: boolean) => {
+	await (isDark
 		? import('@sweetalert2/theme-dark/dark.scss')
-		: import('sweetalert2/src/sweetalert2.scss');
+		: import('sweetalert2/src/sweetalert2.scss'));
 };
 
 watch(() => userStore.isDarkMode, loadAlertCSS);
 
-onBeforeMount(() => {
-	loadAlertCSS(userStore.isDarkMode);
+onBeforeMount(async () => {
+	await loadAlertCSS(userStore.isDarkMode);
 });
 </script>
