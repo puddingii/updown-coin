@@ -5,19 +5,21 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { storeToRefs } from 'pinia';
 import CoinSelect from 'components/templates/CoinSelect.vue';
-import { useCoinStore } from '../stores/coin-store';
+import { useUpdateCoinListQuery } from '../queries/upbit/query';
+import { computed } from 'vue';
 
 defineOptions({
 	name: 'CoinListPage',
 });
 
-const coinStore = useCoinStore();
-const { coinList } = storeToRefs(coinStore);
-
-onMounted(async () => {
-	await coinStore.updateCoinList();
+const { data } = useUpdateCoinListQuery({
+	isDetails: true,
 });
+const coinList = computed(() =>
+	(data.value ?? []).map((coin) => ({
+		id: coin.market,
+		name: coin.korean_name,
+	}))
+);
 </script>

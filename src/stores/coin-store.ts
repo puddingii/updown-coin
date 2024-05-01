@@ -4,25 +4,12 @@ import dayjs from 'dayjs';
 
 import { api } from 'src/boot/axios';
 import { formatURLParams } from 'src/util/formatURLParams';
-import {
-	ICoinCandleInfo,
-	IUpbitCoinCandleInfo,
-	IUpbitCoinDetailInfo,
-	TUnit,
-} from '@interfaces/coin';
+import { ICoinCandleInfo, IUpbitCoinCandleInfo, TUnit } from '@interfaces/coin';
 
 const KEY = 'coin';
 
 export const useCoinStore = defineStore(KEY, {
 	state: () => ({
-		infoList: useStorage(
-			`${KEY}-info-list`,
-			[] as IUpbitCoinDetailInfo[],
-			localStorage,
-			{
-				mergeDefaults: true,
-			}
-		),
 		candleList: useStorage(
 			`${KEY}-candle-list`,
 			[] as IUpbitCoinCandleInfo[],
@@ -33,17 +20,6 @@ export const useCoinStore = defineStore(KEY, {
 		),
 	}),
 	getters: {
-		coinList: (state) =>
-			state.infoList.map((coin) => ({
-				id: coin.market,
-				name: coin.korean_name,
-			})),
-		detailCoinList: (state) =>
-			state.infoList.map((coin) => ({
-				id: coin.market,
-				name: coin.korean_name,
-				event: coin.market_event,
-			})),
 		priceHistoryList: (state) =>
 			state.candleList.map(
 				(candle) =>
@@ -56,20 +32,6 @@ export const useCoinStore = defineStore(KEY, {
 			),
 	},
 	actions: {
-		async updateCoinList() {
-			try {
-				const queryString = formatURLParams({
-					isDetails: true,
-				});
-				const response = await api.get<IUpbitCoinDetailInfo[]>(
-					`/v1/market/all?${queryString}`
-				);
-
-				this.infoList = response.data;
-			} catch (error) {
-				console.error(error);
-			}
-		},
 		async updateCoinCandleList(
 			id: string,
 			options?: { unit?: TUnit; count?: number }
